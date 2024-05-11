@@ -83,7 +83,7 @@ void KaleidoScope_Draw(PlayState* play) {
         KaleidoScope_SetView(pauseCtx, pauseCtx->eye.x, pauseCtx->eye.y, pauseCtx->eye.z);
         Gfx_SetupDL42_Opa(play->state.gfxCtx);
 
-        if (!IS_PAUSE_STATE_OWL_WARP) {
+        if (!IS_PAUSE_STATE_OWLWARP) {
             // Draw Default or Game Over Menus
             // @recomp Record the current pageIndex, then change it to a dummy value for the KaleidoScope_SetVertices.
             u16 saved_page_index = pauseCtx->pageIndex;
@@ -132,7 +132,7 @@ void KaleidoScope_Draw(PlayState* play) {
             KaleidoScope_DrawOwlWarpInfoPanel(play);
             KaleidoScope_UpdateCursorSize(play);
 
-            if (pauseCtx->state == PAUSE_STATE_OWL_WARP_SELECT) {
+            if (pauseCtx->state == PAUSE_STATE_OWLWARP_SELECT) {
                 KaleidoScope_DrawCursor(play);
             }
         }
@@ -211,7 +211,7 @@ void KaleidoScope_DrawCursor(PlayState* play) {
 
 /**
  * infoPanelVtx
- * 
+ *
  * infoPanelVtx[0] name panel left texture
  * infoPanelVtx[4] name panel right texture
  * infoPanelVtx[8] Z Button icon
@@ -739,7 +739,7 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
                 KaleidoScope_DrawDungeonMap(play);
                 Gfx_SetupDL42_Opa(gfxCtx);
                 gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-                func_801091F0(play);
+                MapDisp_DrawDungeonMap(play);
             } else {
                 KaleidoScope_DrawWorldMap(play);
             }
@@ -842,12 +842,12 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
 
                     gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
 
-                    func_801091F0(play);
+                    MapDisp_DrawDungeonMap(play);
                 } else {
                     Matrix_RotateYF(R_PAUSE_WORLD_MAP_YAW / 1000.0f, MTXMODE_NEW);
 
-                    if ((pauseCtx->state == PAUSE_STATE_OPENING_3) || (pauseCtx->state == PAUSE_STATE_OWL_WARP_3) ||
-                        (pauseCtx->state >= PAUSE_STATE_OWL_WARP_6) ||
+                    if ((pauseCtx->state == PAUSE_STATE_OPENING_3) || (pauseCtx->state == PAUSE_STATE_OWLWARP_3) ||
+                        (pauseCtx->state >= PAUSE_STATE_OWLWARP_6) ||
                         ((pauseCtx->state == PAUSE_STATE_SAVEPROMPT) &&
                          ((pauseCtx->savePromptState == PAUSE_SAVEPROMPT_STATE_3) ||
                           (pauseCtx->savePromptState == PAUSE_SAVEPROMPT_STATE_7)))) {

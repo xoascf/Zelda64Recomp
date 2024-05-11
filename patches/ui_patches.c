@@ -94,8 +94,8 @@ void Graph_ExecuteAndDraw(GraphicsContext* gfxCtx, GameState* gameState) {
     GameState_Update(gameState);
 
     OPEN_DISPS(gfxCtx);
-    
-    // @recomp Send the current framerate to RT64, including any extra VI interrupt periods. 
+
+    // @recomp Send the current framerate to RT64, including any extra VI interrupt periods.
     gEXSetRefreshRate(POLY_OPA_DISP++, 60 / (gameState->framerateDivisor + extra_vis));
 
     // @recomp Edit billboard groups to skip interpolation if the camera also skipped.
@@ -485,7 +485,7 @@ void Interface_Draw(PlayState* play) {
         gEXSetRectAlign(OVERLAY_DISP++, G_EX_ORIGIN_LEFT, G_EX_ORIGIN_LEFT, -margin_reduction * 4, -margin_reduction * 4, -margin_reduction * 4, -margin_reduction * 4);
 
         Magic_DrawMeter(play);
-        
+
         // @recomp Draw the D-Pad and its item icons as well as the autosave icon if the game is unpaused.
         if (pauseCtx->state != PAUSE_STATE_MAIN) {
             draw_dpad(play);
@@ -500,7 +500,7 @@ void Interface_Draw(PlayState* play) {
         gEXSetViewportAlign(OVERLAY_DISP++, G_EX_ORIGIN_RIGHT, -(SCREEN_WIDTH - margin_reduction) * 4, margin_reduction * 4);
         Interface_SetOrthoView(interfaceCtx);
 
-        Minimap_Draw(play);
+        Map_DrawMinimap(play);
 
         // @recomp Reset viewport alignment for drawing the target reticle
         gEXSetRectAlign(OVERLAY_DISP++, G_EX_ORIGIN_NONE, G_EX_ORIGIN_NONE, 0, 0, 0, 0);
@@ -617,7 +617,7 @@ void Interface_Draw(PlayState* play) {
                 Interface_DrawClock(play);
             }
         }
-        
+
         // @recomp Restore normal alignment and reset shift for minigame "Perfect" text
         gEXSetRectAlign(OVERLAY_DISP++, G_EX_ORIGIN_NONE, G_EX_ORIGIN_NONE, 0, 0, 0, 0);
         gEXSetViewportAlign(OVERLAY_DISP++, G_EX_ORIGIN_NONE, 0, 0);
@@ -635,7 +635,7 @@ void Interface_Draw(PlayState* play) {
 
         Interface_DrawMinigameIcons(play);
         Interface_DrawTimers(play);
-        
+
         // @recomp Restore normal alignment and shift down for minigame countdown or clock
         gEXSetRectAlign(OVERLAY_DISP++, G_EX_ORIGIN_NONE, G_EX_ORIGIN_NONE, 0, 0, 0, 0);
         gEXSetViewportAlign(OVERLAY_DISP++, G_EX_ORIGIN_NONE, 0, 0);
@@ -771,7 +771,7 @@ void Interface_DrawMinigameIcons(PlayState* play) {
 
     if ((play->pauseCtx.state == PAUSE_STATE_OFF) && (play->pauseCtx.debugEditor == DEBUG_EDITOR_NONE)) {
         // Carrots rendering if the action corresponds to riding a horse
-        if (interfaceCtx->unk_212 == DO_ACTION_FASTER) {
+        if (interfaceCtx->aButtonHorseDoAction == DO_ACTION_FASTER) {
             // Load Carrot Icon
             gDPLoadTextureBlock(OVERLAY_DISP++, gCarrotIconTex, G_IM_FMT_RGBA, G_IM_SIZ_32b, 16, 16, 0,
                                 G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
@@ -936,7 +936,7 @@ void Message_DrawTextBox(PlayState* play, Gfx** gfxP) {
     textbox_viewport->vp.vscale[1] = (gCfbHeight / 2) << 2;
     textbox_viewport->vp.vscale[2] = G_MAXZ;
     textbox_viewport->vp.vscale[3] = 0;
-    
+
     textbox_viewport->vp.vtrans[0] = (gCfbWidth / 2) << 2;
     textbox_viewport->vp.vtrans[1] = (gCfbHeight / 2) << 2;
     textbox_viewport->vp.vtrans[2] = 0;
@@ -1137,7 +1137,7 @@ void ShrinkWindow_Draw(GraphicsContext* gfxCtx) {
         gSPMatrix(gfx++, letterbox_matrix_top, G_MTX_MODELVIEW | G_MTX_PUSH | G_MTX_LOAD);
         gSPVertex(gfx++, letterbox_verts, 4, 0);
         gSP2Triangles(gfx++, 0, 1, 3, 0x0, 0, 3, 2, 0x0);
-        
+
         // @recomp Draw the bottom letterbox element.
         gSPMatrix(gfx++, letterbox_matrix_bottom, G_MTX_MODELVIEW | G_MTX_NOPUSH | G_MTX_LOAD);
         gSPVertex(gfx++, letterbox_verts, 4, 0);
@@ -1187,7 +1187,7 @@ void ShrinkWindow_Draw(GraphicsContext* gfxCtx) {
 
 extern u64 gSceneTitleCardGradientTex[];
 
-// @recomp Patch the scene title card (the one with purple background when entering a new scene) 
+// @recomp Patch the scene title card (the one with purple background when entering a new scene)
 // to not glitch out on the right edge, which is hidden by overscan on N64.
 void Message_DrawSceneTitleCard(PlayState* play, Gfx** gfxP) {
     MessageContext* msgCtx = &play->msgCtx;

@@ -7,7 +7,7 @@
 #include "overlays/actors/ovl_Obj_Warpstone/z_obj_warpstone.h"
 #include "misc_funcs.h"
 
-#define SAVE_TYPE_AUTOSAVE 2 
+#define SAVE_TYPE_AUTOSAVE 2
 
 u8 gCanPause;
 s32 ShrinkWindow_Letterbox_GetSizeTarget(void);
@@ -23,18 +23,18 @@ void KaleidoSetup_Update(PlayState* play) {
     if (CHECK_BTN_ALL(input->cur.button, BTN_R)) {
         if (msgCtx && msgCtx) {}
     }
-    
+
     if ((pauseCtx->state == PAUSE_STATE_OFF) && (pauseCtx->debugEditor == DEBUG_EDITOR_NONE) &&
         (play->gameOverCtx.state == GAMEOVER_INACTIVE)) {
         if ((play->transitionTrigger == TRANS_TRIGGER_OFF) && (play->transitionMode == TRANS_MODE_OFF)) {
             if ((gSaveContext.save.cutsceneIndex < 0xFFF0) && (gSaveContext.nextCutsceneIndex < 0xFFF0)) {
                 if (!Play_InCsMode(play) || ((msgCtx->msgMode != MSGMODE_NONE) && (msgCtx->currentTextId == 0xFF))) {
-                    if ((play->unk_1887C < 2) && (gSaveContext.magicState != MAGIC_STATE_STEP_CAPACITY) &&
+                    if ((play->bButtonAmmoPlusOne < 2) && (gSaveContext.magicState != MAGIC_STATE_STEP_CAPACITY) &&
                         (gSaveContext.magicState != MAGIC_STATE_FILL)) {
                         if (!CHECK_EVENTINF(EVENTINF_17) && !(player->stateFlags1 & PLAYER_STATE1_20)) {
-                            if (!(play->actorCtx.flags & ACTORCTX_FLAG_TELESCOPE_ON) &&
+                            if (!(play->actorCtx.flags & ACTORCTX_FLAG_1) &&
                                 !(play->actorCtx.flags & ACTORCTX_FLAG_PICTO_BOX_ON)) {
-                                if (!play->actorCtx.isOverrideInputOn) {
+                                if (!play->actorCtx.unk268 == 0) {
                                     if (CHECK_BTN_ALL(input->press.button, BTN_START)) {
                                         gSaveContext.prevHudVisibility = gSaveContext.hudVisibility;
                                         pauseCtx->itemDescriptionOn = false;
@@ -80,7 +80,7 @@ void do_autosave(SramContext* sramCtx) {
 
     // Copy the saved parts of the global save context into the sram saving buffer.
     Lib_MemCpy(sramCtx->saveBuf, &gSaveContext, offsetof(SaveContext, fileNum));
-    // Synchronously save into the owl save slot and the backup owl save slot. 
+    // Synchronously save into the owl save slot and the backup owl save slot.
     Sram_SyncWriteToFlash(sramCtx, gFlashOwlSaveStartPages[fileNum * 2], gFlashOwlSaveNumPages[fileNum * 2]);
     Sram_SyncWriteToFlash(sramCtx, gFlashOwlSaveStartPages[fileNum * 2 + 1], gFlashOwlSaveNumPages[fileNum * 2 + 1]);
 
@@ -322,7 +322,7 @@ void draw_autosave_icon(PlayState* play) {
             255, 255, 255, alpha, G_EX_ORIGIN_RIGHT);
         gEXForceUpscale2D(OVERLAY_DISP++, 0);
     }
-        
+
     if (recomp_autosave_debug_enabled() && autosave_was_ready) {
         gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 0, 0, 255);
         gDPSetCombineLERP(OVERLAY_DISP++, 0, 0, 0, PRIMITIVE, 0, 0, 0, PRIMITIVE, 0, 0, 0, PRIMITIVE, 0, 0, 0, PRIMITIVE);
@@ -348,7 +348,7 @@ u32 extra_autosave_delay_milliseconds = 0;
 bool reached_final_three_hours() {
     // Logic copied with modifications from Interface_DrawClock.
     if ((CURRENT_DAY >= 4) ||
-        ((CURRENT_DAY == 3) && (CURRENT_TIME >= CLOCK_TIME(3, 0)) && (CURRENT_TIME < CLOCK_TIME(6, 0)))
+        ((CURRENT_DAY == 3) && (((void)0, gSaveContext.save.time) >= CLOCK_TIME(3, 0)) && (((void)0, gSaveContext.save.time) < CLOCK_TIME(6, 0)))
     ) {
         return true;
     }
@@ -391,7 +391,7 @@ void autosave_post_play_update(PlayState* play) {
         // * The player is allowed to pause.
         if (gSaveContext.hudVisibility == HUD_VISIBILITY_ALL &&
             R_TIME_SPEED != 0 &&
-            !Environment_IsTimeStopped() && 
+            !Environment_IsTimeStopped() &&
             play->msgCtx.msgMode == MSGMODE_NONE &&
             play->pauseCtx.state == PAUSE_STATE_OFF &&
             gSaveContext.save.cutsceneIndex < 0xFFF0 &&
@@ -419,7 +419,7 @@ void autosave_post_play_update(PlayState* play) {
         }
     }
     else {
-        // Update the last autosave time to the current time to prevent autosaving immediately if autosaves are turned back on. 
+        // Update the last autosave time to the current time to prevent autosaving immediately if autosaves are turned back on.
         autosave_reset_timer();
     }
     gCanPause = false;
@@ -436,7 +436,7 @@ extern u16 D_801C6A58[];
 #define CHECK_NEWF(newf)                                                                                 \
     ((newf)[0] != 'Z' || (newf)[1] != 'E' || (newf)[2] != 'L' || (newf)[3] != 'D' || (newf)[4] != 'A' || \
      (newf)[5] != '3')
-     
+
 typedef struct {
     /* 0x00 */ s16 csId;
     /* 0x02 */ s16 length;
@@ -466,7 +466,7 @@ s16 CutsceneManager_FindEntranceCsId(void) {
             (sSceneCutsceneList[csId].scriptIndex < (play = sCutsceneMgr.play)->csCtx.scriptListCount) &&
             (sCutsceneMgr.play->curSpawn ==
              sCutsceneMgr.play->csCtx.scriptList[sSceneCutsceneList[csId].scriptIndex].spawn)) {
-            
+
             // @recomp Check if the entry cutscene should be skipped and do so.
             if (skip_entry_cutscene) {
                 skip_entry_cutscene = false;
@@ -611,7 +611,7 @@ void Sram_OpenSave(FileSelectState* fileSelect, SramContext* sramCtx) {
         func_80147314(sramCtx, fileNum);
     }
     else {
-        gSaveContext.save.entrance = D_801C6A58[(void)0, gSaveContext.save.owlWarpId];
+        gSaveContext.save.entrance = D_801C6A58[(void)0, gSaveContext.save.owlSaveLocation];
         if ((gSaveContext.save.entrance == ENTRANCE(SOUTHERN_SWAMP_POISONED, 10)) &&
             CHECK_WEEKEVENTREG(WEEKEVENTREG_CLEARED_WOODFALL_TEMPLE)) {
             gSaveContext.save.entrance = ENTRANCE(SOUTHERN_SWAMP_CLEARED, 10);
@@ -711,7 +711,7 @@ void ObjWarpstone_Update(Actor* thisx, PlayState* play) {
                 play->msgCtx.msgMode = MSGMODE_OWL_SAVE_0;
                 play->msgCtx.unk120D6 = 0;
                 play->msgCtx.unk120D4 = 0;
-                gSaveContext.save.owlWarpId = OBJ_WARPSTONE_GET_OWL_WARP_ID(&this->dyna.actor);
+                gSaveContext.save.owlSaveLocation = OBJ_WARPSTONE_GET_ID(&this->dyna.actor);
             } else {
                 Message_CloseTextbox(play);
             }

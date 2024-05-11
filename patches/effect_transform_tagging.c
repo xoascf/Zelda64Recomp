@@ -243,7 +243,7 @@ void func_808DD3C8(Actor* thisx, PlayState* play2) {
                 // @recomp Tag the particle's matrix to interpolate normally.
                 gEXMatrixGroupDecomposedNormal(POLY_XLU_DISP++, actor_transform_id(thisx) + i, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_ALLOW);
             }
-            
+
             gSPDisplayList(POLY_XLU_DISP++, gEffDustDL);
 
             // @recomp Pop the particle transform tag.
@@ -264,39 +264,20 @@ void func_808DD3C8(Actor* thisx, PlayState* play2) {
 
 #define TOTAL_EFFECT_COUNT SPARK_COUNT + BLURE_COUNT + SHIELD_PARTICLE_COUNT + TIRE_MARK_COUNT
 
+// This is already in include/z64effect.h
+/*
 typedef struct EffectStatus {
-    /* 0x0 */ u8 active;
-    /* 0x1 */ u8 unk1;
-    /* 0x2 */ u8 unk2;
+    //...
 } EffectStatus; // size = 0x3
 
 typedef struct EffectContext {
-    /* 0x0000 */ struct PlayState* play;
-    struct {
-        EffectStatus status;
-        EffectSpark effect;
-    } /* 0x0004 */ sparks[SPARK_COUNT];
-    struct {
-        EffectStatus status;
-        EffectBlure effect;
-    } /* 0x0E5C */ blures[BLURE_COUNT];
-    struct {
-        EffectStatus status;
-        EffectShieldParticle effect;
-    } /* 0x388C */ shieldParticles[SHIELD_PARTICLE_COUNT];
-    struct {
-        EffectStatus status;
-        EffectTireMark effect;
-    } /* 0x3DF0 */ tireMarks[TIRE_MARK_COUNT];
+    //...
 } EffectContext; // size = 0x98E0
 
 typedef struct EffectInfo {
-    /* 0x00 */ u32 size;
-    /* 0x04 */ void (*init)(void* effect, void* initParams);
-    /* 0x08 */ void (*destroy)(void* effect);
-    /* 0x0C */ s32 (*update)(void* effect);
-    /* 0x10 */ void (*draw)(void* effect, struct GraphicsContext* gfxCtx);
+    //
 } EffectInfo; // size = 0x14
+*/
 
 extern EffectContext sEffectContext;
 extern EffectInfo sEffectInfoTable[];
@@ -305,7 +286,7 @@ static inline void tag_interpolate_effect(GraphicsContext* gfxCtx, u32 id) {
     OPEN_DISPS(gfxCtx);
 
     gEXMatrixGroupDecomposedNormal(POLY_OPA_DISP++, id, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_ALLOW);
-    
+
     gEXMatrixGroupDecomposedNormal(POLY_XLU_DISP++, id + EFFECT_TRANSFORM_ID_COUNT, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_ALLOW);
 
     CLOSE_DISPS();
@@ -317,7 +298,7 @@ static inline void tag_skip_effect(GraphicsContext* gfxCtx, u32 id) {
     gEXMatrixGroupSimple(POLY_OPA_DISP++, id, G_EX_PUSH, G_MTX_MODELVIEW,
         G_EX_COMPONENT_SKIP, G_EX_COMPONENT_SKIP, G_EX_COMPONENT_SKIP,
         G_EX_COMPONENT_SKIP, G_EX_COMPONENT_INTERPOLATE, G_EX_ORDER_LINEAR, G_EX_EDIT_NONE);
-    
+
     gEXMatrixGroupSimple(POLY_XLU_DISP++, id + EFFECT_TRANSFORM_ID_COUNT, G_EX_PUSH, G_MTX_MODELVIEW,
         G_EX_COMPONENT_SKIP, G_EX_COMPONENT_SKIP, G_EX_COMPONENT_SKIP,
         G_EX_COMPONENT_SKIP, G_EX_COMPONENT_INTERPOLATE, G_EX_ORDER_LINEAR, G_EX_EDIT_NONE);
@@ -741,7 +722,7 @@ void EnClearTag_DrawEffects(Actor* thisx, PlayState* play) {
                         Matrix_RotateXFApply(effect->rotationX);
                         Matrix_Scale(effect->scale, effect->scale, effect->scale, MTXMODE_APPLY);
                         gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-                        // @recomp TODO figure out a way to tag these without increasing the allocated IDs per actor. 
+                        // @recomp TODO figure out a way to tag these without increasing the allocated IDs per actor.
                         gSPDisplayList(POLY_XLU_DISP++, gEffWaterSplashDL);
                     }
                 }
@@ -802,7 +783,7 @@ void Environment_DrawSunLensFlare(PlayState* play, EnvironmentContext* envCtx, V
                                   Vec3f vec) {
     if ((play->envCtx.precipitation[PRECIP_RAIN_CUR] == 0) &&
         !(GET_ACTIVE_CAM(play)->stateFlags & CAM_STATE_UNDERWATER) && (play->skyboxId == SKYBOX_NORMAL_SKY)) {
-        f32 v0 = Math_CosS(CURRENT_TIME - CLOCK_TIME(12, 0));
+        f32 v0 = Math_CosS(((void)0, gSaveContext.save.time) - CLOCK_TIME(12, 0));
 
         // @recomp Set up the graphics context.
         OPEN_DISPS(play->state.gfxCtx);
@@ -818,7 +799,7 @@ void Environment_DrawSunLensFlare(PlayState* play, EnvironmentContext* envCtx, V
                                   true);
         // @recomp Pop the matrix group.
         gEXPopMatrixGroup(POLY_XLU_DISP++, G_MTX_MODELVIEW);
-        
+
         // @recomp Close the graphics context.
         CLOSE_DISPS();
     }

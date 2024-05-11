@@ -31,7 +31,7 @@ void EffectSS_ResetEntry(EffectSs* particle) {
     }
 
     // @recomp Get this particle's index and mark it as being reset.
-    u32 particle_index = particle - &sEffectSsInfo.dataTable[0];
+    u32 particle_index = particle - &sEffectSsInfo.data_table[0];
     if (particle_index >= sEffectSsInfo.size) {
         recomp_crash("Invalid particle was reset!\n");
     }
@@ -49,11 +49,11 @@ void EffectSS_Init(PlayState* play, s32 numEntries) {
         recomp_crash("Particle reset list too small!\n");
     }
 
-    sEffectSsInfo.dataTable = (EffectSs*)THA_AllocTailAlign16(&play->state.tha, numEntries * sizeof(EffectSs));
+    sEffectSsInfo.data_table = (EffectSs*)THA_AllocTailAlign16(&play->state.tha, numEntries * sizeof(EffectSs));
     sEffectSsInfo.searchIndex = 0;
     sEffectSsInfo.size = numEntries;
 
-    for (effectsSs = &sEffectSsInfo.dataTable[0]; effectsSs < &sEffectSsInfo.dataTable[sEffectSsInfo.size];
+    for (effectsSs = &sEffectSsInfo.data_table[0]; effectsSs < &sEffectSsInfo.data_table[sEffectSsInfo.size];
          effectsSs++) {
         EffectSS_ResetEntry(effectsSs);
     }
@@ -67,7 +67,7 @@ void EffectSS_Init(PlayState* play, s32 numEntries) {
 
 // @recomp Add transform tags to particles
 void EffectSS_DrawParticle(PlayState* play, s32 index) {
-    EffectSs* entry = &sEffectSsInfo.dataTable[index];
+    EffectSs* entry = &sEffectSsInfo.data_table[index];
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -83,11 +83,11 @@ void EffectSS_DrawParticle(PlayState* play, s32 index) {
 
     // @recomp Clear this particle's reset state.
     particle_reset_list[index] = false;
-    
+
     if (entry->draw != NULL) {
         entry->draw(play, index, entry);
     }
-    
+
     gEXPopMatrixGroup(POLY_OPA_DISP++, G_MTX_MODELVIEW);
     gEXPopMatrixGroup(POLY_XLU_DISP++, G_MTX_MODELVIEW);
 
@@ -264,8 +264,8 @@ void DemoKakyo_DrawLostWoodsSparkle(Actor* thisx, PlayState* play2) {
 
                 // @recomp Tag the particle's matrix. Skip if the particle's base position changed.
                 if (this->effects[i].state == DEMO_KANKYO_STATE_SKYFISH || (
-                        kankyo_prev_pos_base[i].x == this->effects[i].posBase.x && 
-                        kankyo_prev_pos_base[i].y == this->effects[i].posBase.y && 
+                        kankyo_prev_pos_base[i].x == this->effects[i].posBase.x &&
+                        kankyo_prev_pos_base[i].y == this->effects[i].posBase.y &&
                         kankyo_prev_pos_base[i].z == this->effects[i].posBase.z)) {
                     gEXMatrixGroupDecomposedNormal(POLY_XLU_DISP++, actor_transform_id(thisx) + i, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_ALLOW);
                 }
@@ -359,8 +359,8 @@ void DemoKankyo_DrawMoonAndGiant(Actor* thisx, PlayState* play2) {
 
                 // @recomp Tag the particle's matrix. Skip if the particle's base position changed.
                 // Allow the Y base position to change if this is a moon particle.
-                if (kankyo_prev_pos_base[i].x == this->effects[i].posBase.x && 
-                    (kankyo_prev_pos_base[i].y == this->effects[i].posBase.y || this->actor.params == DEMO_KANKYO_TYPE_MOON) && 
+                if (kankyo_prev_pos_base[i].x == this->effects[i].posBase.x &&
+                    (kankyo_prev_pos_base[i].y == this->effects[i].posBase.y || this->actor.params == DEMO_KANKYO_TYPE_MOON) &&
                     kankyo_prev_pos_base[i].z == this->effects[i].posBase.z) {
                     gEXMatrixGroupDecomposedNormal(POLY_XLU_DISP++, actor_transform_id(thisx) + i, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_ALLOW);
                 }
@@ -519,7 +519,7 @@ void func_80A5A184(Actor* thisx, PlayState* play2) {
                 // @recomp Pop the matrix group.
                 gEXPopMatrixGroup(POLY_OPA_DISP++, G_MTX_MODELVIEW);
             }
-            
+
             // @recomp Clear the respawned state of this particle.
             WATER_EFFECT_RESPAWNED(ptr) = false;
         }

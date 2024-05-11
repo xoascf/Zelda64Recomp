@@ -100,7 +100,7 @@ void EnTanron2_Draw(Actor* thisx, PlayState* play2) {
 
     gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 0, 0, 0, 150);
     gSPDisplayList(POLY_XLU_DISP++, gWartShadowMaterialDL);
-    
+
     // @recomp Manual relocation, TODO remove this when the recompiler does it automatically.
     Boss04** D_80BB8450_relocated = (Boss04**)actor_relocate(thisx, &D_80BB8450);
 
@@ -138,7 +138,7 @@ void EnTanron2_Draw(Actor* thisx, PlayState* play2) {
             (tanron2->world.pos.y <= tanron2->floorHeight)) {
             Matrix_Translate(tanron2->world.pos.x, (*D_80BB8450_relocated)->actor.floorHeight + 2.0f, tanron2->world.pos.z,
                              MTXMODE_NEW);
-                             
+
             // @recomp Manual relocation, TODO remove this when the recompiler does it automatically.
             f32 D_80BB8454_value = *(f32*)actor_relocate(thisx, &D_80BB8454);
             Matrix_Scale(D_80BB8454_value, 0.0f, D_80BB8454_value, MTXMODE_APPLY);
@@ -305,7 +305,7 @@ void Boss03_DrawEffects(PlayState* play) {
                 gEXMatrixGroupDecomposedNormal(POLY_OPA_DISP++, SPECIAL_EFFECTS_TRANSFORM_ID_START + i, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
             }
             special_effect_reset_states[i] = false;
-            
+
             gSPMatrix(POLY_OPA_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
             gSPDisplayList(POLY_OPA_DISP++, gGyorgBubbleModelDL);
 
@@ -657,14 +657,14 @@ void func_80B0C398(BossHakugin* this, PlayState* play) {
     OPEN_DISPS(play->state.gfxCtx);
 
     gSPDisplayList(POLY_OPA_DISP++, gGohtRockMaterialDL);
-    for (i = 0; i < ARRAY_COUNT(this->unk_9F8); i++) {
-        effect = &this->unk_9F8[i];
+    for (i = 0; i < ARRAY_COUNT(this->unk_09F8); i++) {
+        effect = &this->unk_09F8[i];
         if ((effect->unk_18 >= 0) && (effect->unk_1A == 0)) {
             Matrix_SetTranslateRotateYXZ(effect->unk_0.x, effect->unk_0.y, effect->unk_0.z, &effect->unk_1C);
             Matrix_Scale(effect->unk_24, effect->unk_24, effect->unk_24, MTXMODE_APPLY);
 
             // @recomp Tag the transform.
-            gEXMatrixGroupDecomposedVerts(POLY_OPA_DISP++, GOHT_ROCKS_TRANSFORM_ID_START + i + 0 * ARRAY_COUNT(this->unk_9F8), G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
+            gEXMatrixGroupDecomposedVerts(POLY_OPA_DISP++, GOHT_ROCKS_TRANSFORM_ID_START + i + 0 * ARRAY_COUNT(this->unk_09F8), G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
 
             gSPMatrix(POLY_OPA_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
             gSPDisplayList(POLY_OPA_DISP++, gGohtRockModelDL);
@@ -675,14 +675,14 @@ void func_80B0C398(BossHakugin* this, PlayState* play) {
     }
 
     gSPDisplayList(POLY_OPA_DISP++, gGohtStalactiteMaterialDL);
-    for (i = 0; i < ARRAY_COUNT(this->unk_9F8); i++) {
-        effect = &this->unk_9F8[i];
+    for (i = 0; i < ARRAY_COUNT(this->unk_09F8); i++) {
+        effect = &this->unk_09F8[i];
         if ((effect->unk_18 >= 0) && (effect->unk_1A == 1)) {
             Matrix_SetTranslateRotateYXZ(effect->unk_0.x, effect->unk_0.y, effect->unk_0.z, &effect->unk_1C);
             Matrix_Scale(effect->unk_24, effect->unk_24, effect->unk_24, MTXMODE_APPLY);
 
             // @recomp Tag the transform.
-            gEXMatrixGroupDecomposedVerts(POLY_OPA_DISP++, GOHT_ROCKS_TRANSFORM_ID_START + i + 1 * ARRAY_COUNT(this->unk_9F8), G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
+            gEXMatrixGroupDecomposedVerts(POLY_OPA_DISP++, GOHT_ROCKS_TRANSFORM_ID_START + i + 1 * ARRAY_COUNT(this->unk_09F8), G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
 
             gSPMatrix(POLY_OPA_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
             gSPDisplayList(POLY_OPA_DISP++, gGohtStalactiteModelDL);
@@ -747,7 +747,7 @@ void EnOsn_ChooseAction(EnOsn* this, PlayState* play) {
         // @recomp Manual relocation, TODO remove when automated by the recompiler.
         this->actionFunc = (EnOsnActionFunc)actor_relocate(&this->actor, EnOsn_Idle);
     }
-    
+
     // @recomp Skip interpolation this frame.
     actor_set_interpolation_skipped(&this->actor);
 }
@@ -857,7 +857,7 @@ void EnOsn_HandleCsAction(EnOsn* this, PlayState* play) {
             }
             // @recomp Manually relocate the static symbol.
             AnimationInfo* sAnimationInfo = (AnimationInfo*)actor_relocate(&this->actor, sHappyMaskSalesmanAnimationInfo);
-            
+
             Actor_ChangeAnimationByInfo(&this->skelAnime, sAnimationInfo, this->animIndex);
 
             // @recomp Skip interpolation this frame.
@@ -917,7 +917,7 @@ void EnFall2_Draw(Actor* thisx, PlayState* play) {
             gEXMatrixGroupDecomposedNormal(POLY_XLU_DISP++, actor_transform_id(thisx), G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
 
             func_8018450C(play, &this->skeletonInfo, mtx, NULL, NULL, &this->actor);
-            
+
             // @recomp Pop the matrix group.
             gEXPopMatrixGroup(POLY_XLU_DISP++, G_MTX_MODELVIEW);
             CLOSE_DISPS(play->state.gfxCtx);
@@ -1010,7 +1010,7 @@ void func_80A34B28(ObjEntotu* this, PlayState* play) {
         gSPSegment(POLY_XLU_DISP++, 0x09, Lib_SegmentedToVirtual(this->unk_148));
         gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
         gSPDisplayList(POLY_XLU_DISP++, object_f53_obj_DL_001C00);
-    
+
         // @recomp Pop the matrix group.
         gEXPopMatrixGroup(POLY_XLU_DISP++, G_MTX_MODELVIEW);
 
@@ -1041,7 +1041,7 @@ void func_80A34A44(ObjEntotu* this, PlayState* play) {
 
     gSPMatrix(POLY_OPA_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
     gSPDisplayList(POLY_OPA_DISP++, object_f53_obj_DL_000158);
-    
+
     // @recomp Pop the matrix group.
     gEXPopMatrixGroup(POLY_OPA_DISP++, G_MTX_MODELVIEW);
 
@@ -1054,7 +1054,7 @@ void Environment_DrawRainImpl(PlayState* play, View* view, GraphicsContext* gfxC
 void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) {
     if (!(GET_ACTIVE_CAM(play)->stateFlags & CAM_STATE_UNDERWATER) &&
         (play->envCtx.precipitation[PRECIP_SNOW_CUR] == 0)) {
-        
+
         // @recomp Open the displaylists and skip interpolation for rain.
         OPEN_DISPS(gfxCtx);
         gEXMatrixGroupNoInterpolation(POLY_XLU_DISP++, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
@@ -1078,7 +1078,7 @@ void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) 
 
 // @recomp Skip interpolation on the boulders in the path to Snowhead and the path to Ikana Canyon when they teleport back to their home position.
 void func_8093EE64(EnGoroiwa* this, s32 arg1) {
-    Vec3s* temp_v0 = &this->pathPoints[arg1];
+    Vec3s* temp_v0 = &this->unk_1D0[arg1];
 
     this->actor.world.pos.x = temp_v0->x;
     this->actor.world.pos.y = temp_v0->y;
@@ -1106,7 +1106,7 @@ void EnTwig_Draw(Actor* thisx, PlayState* play) {
 
             // @recomp Pop the tag.
             gEXPopMatrixGroup(POLY_OPA_DISP++, G_MTX_MODELVIEW);
-            
+
             CLOSE_DISPS(play->state.gfxCtx);
             break;
         case 2:

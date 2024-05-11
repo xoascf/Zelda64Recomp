@@ -1,7 +1,7 @@
 #include "patches.h"
 #include "graphics.h"
 #include "transform_ids.h"
-#include "libc64/qrand.h"
+#include "rand.h"
 
 extern Mtx* sSkyboxDrawMatrix;
 
@@ -29,7 +29,7 @@ void Skybox_Draw(SkyboxContext* skyboxCtx, GraphicsContext* gfxCtx, s16 skyboxId
     Matrix_ToMtx(sSkyboxDrawMatrix);
 
     gSPMatrix(POLY_OPA_DISP++, sSkyboxDrawMatrix, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-    
+
     // @recomp Tag the skybox's matrix, skipping interpolation if the camera's interpolation was also skipped.
     if (camera_was_skipped()) {
         gEXMatrixGroupDecomposedSkipAll(POLY_OPA_DISP++, SKYBOX_TRANSFORM_ID_START, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
@@ -37,7 +37,7 @@ void Skybox_Draw(SkyboxContext* skyboxCtx, GraphicsContext* gfxCtx, s16 skyboxId
     else {
         gEXMatrixGroupDecomposedNormal(POLY_OPA_DISP++, SKYBOX_TRANSFORM_ID_START, G_EX_PUSH, G_MTX_MODELVIEW, G_EX_EDIT_NONE);
     }
-    
+
     gDPSetColorDither(POLY_OPA_DISP++, G_CD_MAGICSQ);
     gDPSetTextureFilter(POLY_OPA_DISP++, G_TF_BILERP);
     gDPLoadTLUT_pal256(POLY_OPA_DISP++, skyboxCtx->paletteStaticSegment);
@@ -66,7 +66,7 @@ void Skybox_Draw(SkyboxContext* skyboxCtx, GraphicsContext* gfxCtx, s16 skyboxId
     CLOSE_DISPS(gfxCtx);
 }
 
-// @recomp Draw stars with billboarding to allow for interpolation instead of rects. 
+// @recomp Draw stars with billboarding to allow for interpolation instead of rects.
 void Environment_DrawSkyboxStarBillboard(GraphicsContext* gfxCtx, MtxF* billboard_mtx, Gfx** gfxp, f32 x, f32 y, f32 z, s32 width, s32 height) {
     static Vtx star_verts[] = {
         {{{ -1, -1, 0 }, 0, { 0, 0 }, { 0, 0, 0, 0xFF }}},
@@ -83,7 +83,7 @@ void Environment_DrawSkyboxStarBillboard(GraphicsContext* gfxCtx, MtxF* billboar
     // Scales down the stars to roughly match what their original rect size was.
     SkinMatrix_SetScale(&scale_matrix, width * 25.0f / 4.0f, height * 25.0f / 4.0f, 1.0f);
     SkinMatrix_MtxFMtxFMult(billboard_mtx, &scale_matrix, &mv_matrix);
-    
+
     mv_matrix.mf[3][0] = x;
     mv_matrix.mf[3][1] = y;
     mv_matrix.mf[3][2] = z;
@@ -203,14 +203,14 @@ void Environment_DrawSkyboxStarsImpl(PlayState* play, Gfx** gfxP) {
 
             // temp_f4 = Rand_ZeroOne_Variable(&randInt);
             randInt = (randInt * RAND_MULTIPLIER) + RAND_INCREMENT;
-            gRandFloat.i = (randInt >> 9) | 0x3F800000;
-            temp = gRandFloat.f;
+            gRandFloat = (randInt >> 9) | 0x3F800000;
+            temp = *((f32*)&gRandFloat);
             temp_f4 = temp - 1.0f;
 
             // temp_f20 = Rand_ZeroOne_Variable(&randInt);
             randInt = (randInt * RAND_MULTIPLIER) + RAND_INCREMENT;
-            gRandFloat.i = (randInt >> 9) | 0x3F800000;
-            temp_f20 = ((gRandFloat.f - 1.0f) + temp_f4) * 0.5f;
+            gRandFloat = (randInt >> 9) | 0x3F800000;
+            temp_f20 = ((*((f32*)&gRandFloat) - 1.0f) + temp_f4) * 0.5f;
 
             // Rand_Next_Variable(&randInt);
             randInt = (randInt * RAND_MULTIPLIER) + RAND_INCREMENT;
@@ -222,8 +222,8 @@ void Environment_DrawSkyboxStarsImpl(PlayState* play, Gfx** gfxP) {
 
             // temp_f2 = Rand_ZeroOne_Variable(&randInt);
             randInt = (randInt * RAND_MULTIPLIER) + RAND_INCREMENT;
-            gRandFloat.i = ((randInt >> 9) | 0x3F800000);
-            temp_f2 = gRandFloat.f - 1.0f;
+            gRandFloat = ((randInt >> 9) | 0x3F800000);
+            temp_f2 = *((f32*)&gRandFloat) - 1.0f;
 
             // Set random width
             // @recomp Scale down the max star size from 8+2 to 4+2.

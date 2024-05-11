@@ -2,7 +2,7 @@
 #include "input.h"
 #include "z64snap.h"
 // Decomp rename, TODO update decomp and remove this
-#define AudioVoice_GetWord func_801A5100
+//#define AudioVoice_GetWord func_801A5100 HM decomp has this right!
 #include "z64voice.h"
 
 s32 func_80847190(PlayState* play, Player* this, s32 arg2);
@@ -49,7 +49,7 @@ s32 func_80847190(PlayState* play, Player* this, s32 arg2) {
 
         float delta_mouse_x, delta_mouse_y;
         recomp_get_mouse_deltas(&delta_mouse_x, &delta_mouse_y);
-        
+
         total_mouse_x += delta_mouse_x;
         total_mouse_y += delta_mouse_y;
 
@@ -85,7 +85,7 @@ s32 func_80847190(PlayState* play, Player* this, s32 arg2) {
 
     this->unk_AA6 |= 2;
 
-    return func_80832754(this, (play->unk_1887C != 0) || func_800B7128(this) || func_8082EF20(this));
+    return func_80832754(this, (play->bButtonAmmoPlusOne != 0) || func_800B7128(this) || func_8082EF20(this));
 }
 
 u32 sPlayerItemButtons[] = {
@@ -131,7 +131,7 @@ typedef enum {
 
 // static inline void dup_to_cup(u16* button) {
 //     if (*button & BTN_DUP) {
-//         *button |= BTN_CUP; 
+//         *button |= BTN_CUP;
 //     }
 // }
 
@@ -159,7 +159,7 @@ struct ExButtonMapping {
     EquipSlotEx slot;
 };
 
-// These are negated to avoid a check where the game clamps the button to B if it's greater than 
+// These are negated to avoid a check where the game clamps the button to B if it's greater than
 struct ExButtonMapping buttons_to_extra_slot[] = {
     {BTN_DLEFT,  -EQUIP_SLOT_EX_DLEFT},
     {BTN_DRIGHT, -EQUIP_SLOT_EX_DRIGHT},
@@ -180,7 +180,7 @@ struct ExButtonMapping buttons_to_extra_slot[] = {
          ? BUTTON_ITEM_EQUIP(0, (btn))                  \
          : ((gSaveContext.hudVisibility == HUD_VISIBILITY_A_B_C) ? BUTTON_ITEM_EQUIP(0, (btn)) : ITEM_NONE))
 
-         
+
 void set_extra_item_slot_status(u8 status) {
     for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
         extra_item_slot_statuses[i] = status;
@@ -221,7 +221,7 @@ extern Input* sPlayerControlInput;
 // Return currently-pressed button, in order of priority D-Pad, B, CLEFT, CDOWN, CRIGHT.
 EquipSlot func_8082FDC4(void) {
     EquipSlot i;
-    
+
     // @recomp Manually relocate, TODO remove this when the recompiler can relocate automatically.
     Input* sPlayerControlInput_reloc = *(Input**)KaleidoManager_GetRamAddr(&sPlayerControlInput);
 
@@ -420,7 +420,7 @@ void Interface_UpdateButtonsPart1(PlayState* play) {
     if (gSaveContext.save.cutsceneIndex < 0xFFF0) {
         gSaveContext.hudVisibilityForceButtonAlphasByStatus = false;
         if ((player->stateFlags1 & PLAYER_STATE1_800000) || CHECK_WEEKEVENTREG(WEEKEVENTREG_08_01) ||
-            (!CHECK_EVENTINF(EVENTINF_41) && (play->unk_1887C >= 2))) {
+            (!CHECK_EVENTINF(EVENTINF_41) && (play->bButtonAmmoPlusOne >= 2))) {
             // Riding Epona OR Honey & Darling minigame OR Horseback balloon minigame OR related to swamp boat
             // (non-minigame?)
             if ((player->stateFlags1 & PLAYER_STATE1_800000) && (player->currentMask == PLAYER_MASK_BLAST) &&
@@ -476,7 +476,7 @@ void Interface_UpdateButtonsPart1(PlayState* play) {
                         } else {
                             BUTTON_ITEM_EQUIP(CUR_FORM, EQUIP_SLOT_B) = ITEM_BOW;
 
-                            if (play->unk_1887C >= 2) {
+                            if (play->bButtonAmmoPlusOne >= 2) {
                                 Interface_LoadItemIconImpl(play, EQUIP_SLOT_B);
                             } else if (gSaveContext.save.saveInfo.inventory.items[SLOT_BOW] == ITEM_NONE) {
                                 BUTTON_ITEM_EQUIP(CUR_FORM, EQUIP_SLOT_B) = ITEM_NONE;
@@ -503,7 +503,7 @@ void Interface_UpdateButtonsPart1(PlayState* play) {
                     } else if (!CHECK_WEEKEVENTREG(WEEKEVENTREG_82_08) &&
                                (gSaveContext.minigameStatus == MINIGAME_STATUS_ACTIVE)) {
                         Interface_SetHudVisibility(HUD_VISIBILITY_B);
-                    } else if (play->unk_1887C >= 2) {
+                    } else if (play->bButtonAmmoPlusOne >= 2) {
                         Interface_SetHudVisibility(HUD_VISIBILITY_B);
                     } else if (CHECK_WEEKEVENTREG(WEEKEVENTREG_08_01)) {
                         BUTTON_STATUS(EQUIP_SLOT_C_LEFT) = BTN_DISABLED;
@@ -536,7 +536,7 @@ void Interface_UpdateButtonsPart1(PlayState* play) {
                     BUTTON_ITEM_EQUIP(CUR_FORM, EQUIP_SLOT_B) = ITEM_BOW;
                 }
 
-                if (play->unk_1887C >= 2) {
+                if (play->bButtonAmmoPlusOne >= 2) {
                     Interface_LoadItemIconImpl(play, EQUIP_SLOT_B);
                 } else if (gSaveContext.save.saveInfo.inventory.items[SLOT_BOW] == ITEM_NONE) {
                     BUTTON_ITEM_EQUIP(CUR_FORM, EQUIP_SLOT_B) = ITEM_NONE;
@@ -563,7 +563,7 @@ void Interface_UpdateButtonsPart1(PlayState* play) {
                     Interface_SetHudVisibility(HUD_VISIBILITY_A_B_MINIMAP);
                 } else if (gSaveContext.minigameStatus == MINIGAME_STATUS_ACTIVE) {
                     Interface_SetHudVisibility(HUD_VISIBILITY_B);
-                } else if (play->unk_1887C >= 2) {
+                } else if (play->bButtonAmmoPlusOne >= 2) {
                     Interface_SetHudVisibility(HUD_VISIBILITY_B);
                 } else if (CHECK_WEEKEVENTREG(WEEKEVENTREG_08_01)) {
                     BUTTON_STATUS(EQUIP_SLOT_C_LEFT) = BTN_DISABLED;
@@ -608,7 +608,7 @@ void Interface_UpdateButtonsPart1(PlayState* play) {
                 Message_CloseTextbox(play);
                 if (play->msgCtx.choiceIndex != 0) {
                     Audio_PlaySfx_MessageCancel();
-                    func_80115844(play, DO_ACTION_STOP);
+                    Interface_LoadBButtonDoActionLabel(play, DO_ACTION_STOP);
                     Interface_SetHudVisibility(HUD_VISIBILITY_A_B);
                     sPictoState = PICTO_BOX_STATE_LENS;
                     REMOVE_QUEST_ITEM(QUEST_PICTOGRAPH);
@@ -649,7 +649,7 @@ void Interface_UpdateButtonsPart1(PlayState* play) {
         } else if (play->actorCtx.flags & ACTORCTX_FLAG_PICTO_BOX_ON) {
             // Related to pictograph
             if (!CHECK_QUEST_ITEM(QUEST_PICTOGRAPH)) {
-                func_80115844(play, DO_ACTION_STOP);
+                Interface_LoadBButtonDoActionLabel(play, DO_ACTION_STOP);
                 Interface_SetHudVisibility(HUD_VISIBILITY_A_B);
                 sPictoState = PICTO_BOX_STATE_LENS;
             } else {
@@ -1271,7 +1271,7 @@ void Interface_UpdateButtonAlphas(PlayState* play, s16 dimmingAlpha, s16 risingA
     if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
         interfaceCtx->cRightAlpha = dimmingAlpha;
     }
-            
+
     // @recomp
     for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
         if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1314,7 +1314,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1379,7 +1379,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1492,7 +1492,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1530,7 +1530,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1576,7 +1576,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1629,7 +1629,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1693,7 +1693,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if (interfaceCtx->cRightAlpha != 255) {
                 interfaceCtx->cRightAlpha = risingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if (extra_item_slot_alphas[i] != 255) {
@@ -1735,7 +1735,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if (interfaceCtx->cRightAlpha != 255) {
                 interfaceCtx->cRightAlpha = risingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if (extra_item_slot_alphas[i] != 255) {
@@ -1785,7 +1785,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if (interfaceCtx->cRightAlpha != 255) {
                 interfaceCtx->cRightAlpha = risingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if (extra_item_slot_alphas[i] != 255) {
@@ -1811,7 +1811,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1857,7 +1857,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1895,7 +1895,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1937,7 +1937,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -1983,7 +1983,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -2017,7 +2017,7 @@ void Interface_UpdateHudAlphas(PlayState* play, s16 dimmingAlpha) {
             if ((interfaceCtx->cRightAlpha != 0) && (interfaceCtx->cRightAlpha > dimmingAlpha)) {
                 interfaceCtx->cRightAlpha = dimmingAlpha;
             }
-            
+
             // @recomp
             for (int i = 0; i < EXTRA_ITEM_SLOT_COUNT; i++) {
                 if ((extra_item_slot_alphas[i] != 0) && (extra_item_slot_alphas[i] > dimmingAlpha)) {
@@ -2136,12 +2136,12 @@ void draw_dpad_icons(PlayState* play) {
     }
 
     OPEN_DISPS(play->state.gfxCtx);
-    
+
 
     gEXForceUpscale2D(OVERLAY_DISP++, 1);
     gDPLoadTextureBlock(OVERLAY_DISP++, dpad_icon, G_IM_FMT_RGBA, G_IM_SIZ_32b, DPAD_IMG_W, DPAD_IMG_H, 0,
         G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
-        
+
     gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
 
     for (int i = 0; i < 4; i++) {

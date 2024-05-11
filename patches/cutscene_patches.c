@@ -24,7 +24,7 @@ void Cutscene_ActorTranslate(Actor* actor, PlayState* play, s32 cueChannel) {
     // @recomp Check if this is a new cue for a given channel.
     if (prev_cues_checked[cueChannel] != cue) {
         // New cue, so check if the start position of this cue is significantly different than the actor's current position.
-        if (Math3D_Distance(&startPos, &actor->world.pos) > CUE_DIST_THRESHOLD) {
+        if (Math3D_Vec3f_DistXYZ(&startPos, &actor->world.pos) > CUE_DIST_THRESHOLD) {
             // The actor is probably being teleported, so skip interpolation for them this frame.
             actor_set_interpolation_skipped(actor);
         }
@@ -124,7 +124,7 @@ void Player_Cutscene_Translate(PlayState* play, Player* this, CsCmdActorCue* cue
         start_pos.x = startX;
         start_pos.y = startY;
         start_pos.z = startZ;
-        if (Math3D_Distance(&start_pos, &this->actor.world.pos) > CUE_DIST_THRESHOLD) {
+        if (Math3D_Vec3f_DistXYZ(&start_pos, &this->actor.world.pos) > CUE_DIST_THRESHOLD) {
             // The actor is probably being teleported, so skip interpolation for them this frame.
             actor_set_interpolation_skipped(&this->actor);
         }
