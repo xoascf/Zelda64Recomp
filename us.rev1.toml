@@ -1,7 +1,7 @@
 # Config file for Majora's Mask NTSC 1.0 Recompilation.
 
 [input]
-entrypoint = 0x80080000
+#entrypoint = 0x80080000
 # Paths are relative to the location of this config file.
 elf_path = "mm.us.rev1.elf"
 output_func_path = "RecompiledFuncs"
@@ -75,6 +75,6 @@ value = 0x00000000 # jal osSetTimer -> nop
 
 # Prevent the minimap from drawing at a point where it can cause a crash when pausing.
 [[patches.instruction]]
-func = "func_80106644"
+func = "MapDisp_DrawMinimap"
 vram = 0x80106684
 value = 0x29E10003 # slti $at, $t7, 0x4 -> slti $at, $t7, 0x3
